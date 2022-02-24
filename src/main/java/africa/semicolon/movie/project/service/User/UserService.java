@@ -11,10 +11,10 @@ import com.github.fge.jsonpatch.JsonPatchException;
 public interface UserService {
     User createUser(UserDto userDto) throws BusinessLogicException;
     User updateUserDetails(Long id, JsonPatch userPatch) throws UserDoesNotExistException, JsonPatchException, JsonProcessingException;
-    User updateUser(String email, UserDto userDto);
-    void deleteUser(String email);
-    User findUserByEmail(String email);
-    User findUserById(Long id);
+    User updateUser(String email, UserDto userDto) throws UserDoesNotExistException;
+    void deleteUser(String email) throws UserDoesNotExistException;
+    User findUserByEmail(String email) throws UserDoesNotExistException;
+    User findUserById(Long id) throws UserDoesNotExistException;
 
 
 }

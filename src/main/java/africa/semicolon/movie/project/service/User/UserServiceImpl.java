@@ -11,9 +11,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class UserServiceImpl implements UserService{
 
     @Autowired
@@ -45,31 +47,58 @@ public class UserServiceImpl implements UserService{
         User targetUser = queryResult.get();
         try{
             targetUser = applyPatchToUSer(userPatch, targetUser);
-            return userRepository.save(targetUser);
+
         }catch( JsonProcessingException | JsonPatchException e){
             System.out.println("Update failed!!");
         }
-        return null;
+        return userRepository.save(targetUser);
     }
 
     @Override
-    public User updateUser(String email, UserDto userDto) {
-        return null;
+    public User updateUser(String email, UserDto userDto) throws UserDoesNotExistException {
+        if(userDto == null){
+            throw new IllegalArgumentException("Request details cannot be null");
+        }
+        Optional <User> queryResult= userRepository.findByEmail(userDto.getEmail());
+        if(queryResult.isEmpty()){
+            throw new UserDoesNotExistException("User with email " +userDto.getEmail() +" does not exist");
+        }
+        User targetUser = queryResult.get();
+        targetUser.setLastName(userDto.getLastName());
+        targetUser.setPassword(userDto.getPassword());
+        targetUser.setFirstName(userDto.getFirstName());
+        targetUser.setEmail(userDto.getEmail());
+        return userRepository.save(targetUser);
     }
 
     @Override
-    public void deleteUser(String email) {
-
+    public void deleteUser(String email) throws UserDoesNotExistException {
+        Optional<User> queryResult = userRepository.findByEmail(email);
+        if(queryResult.isEmpty()){
+            throw new UserDoesNotExistException("user with email " + email + " does not exist");
+        }
+        User user = queryResult.get();
+        userRepository.delete(user);
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return null;
+    public User findUserByEmail(String email) throws UserDoesNotExistException {
+        Optional<User> queryResult = userRepository.findByEmail(email);
+        if(queryResult.isEmpty()){
+            throw new UserDoesNotExistException("User with email " +email + " does not exist");
+        }
+        User targetUser = queryResult.get();
+        return targetUser;
     }
 
     @Override
-    public User findUserById(Long id) {
-        return null;
+    public User findUserById(Long id) throws UserDoesNotExistException {
+        Optional<User> queryResult = userRepository.findById(id);
+        if(queryResult.isEmpty()){
+            throw new UserDoesNotExistException("User with ID " +id + " does not exist");
+        }
+        User targetUser = queryResult.get();
+        return targetUser;
     }
 
     private User applyPatchToUSer(JsonPatch userPatch, User targetUser) throws JsonProcessingException, JsonPatchException {
