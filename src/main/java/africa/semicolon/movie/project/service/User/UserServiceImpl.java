@@ -1,9 +1,12 @@
 package africa.semicolon.movie.project.service.User;
 
 import africa.semicolon.movie.project.data.dtos.UserDto;
+import africa.semicolon.movie.project.data.models.Movie;
 import africa.semicolon.movie.project.data.models.User;
+import africa.semicolon.movie.project.data.repostories.MovieRepository;
 import africa.semicolon.movie.project.data.repostories.UserRepository;
 import africa.semicolon.movie.project.web.exceptions.BusinessLogicException;
+import africa.semicolon.movie.project.web.exceptions.MovieNotFoundException;
 import africa.semicolon.movie.project.web.exceptions.UserDoesNotExistException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,6 +23,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    MovieRepository movieRepository;
 
     @Override
     public User createUser(UserDto userDto) throws BusinessLogicException {
@@ -82,23 +88,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User findUserByEmail(String email) throws UserDoesNotExistException {
-        Optional<User> queryResult = userRepository.findByEmail(email);
+    public Movie findMovieByName(String name) throws MovieNotFoundException {
+        Optional<Movie> queryResult = movieRepository.findMovieByName(name);
         if(queryResult.isEmpty()){
-            throw new UserDoesNotExistException("User with email " +email + " does not exist");
+            throw new MovieNotFoundException("Movie not on our Platform");
         }
-        User targetUser = queryResult.get();
-        return targetUser;
-    }
-
-    @Override
-    public User findUserById(Long id) throws UserDoesNotExistException {
-        Optional<User> queryResult = userRepository.findById(id);
-        if(queryResult.isEmpty()){
-            throw new UserDoesNotExistException("User with ID " +id + " does not exist");
-        }
-        User targetUser = queryResult.get();
-        return targetUser;
+        Movie targetMovie = queryResult.get();
+        return targetMovie;
     }
 
     private User applyPatchToUSer(JsonPatch userPatch, User targetUser) throws JsonProcessingException, JsonPatchException {

@@ -1,8 +1,10 @@
 package africa.semicolon.movie.project.service.User;
 
 import africa.semicolon.movie.project.data.dtos.UserDto;
+import africa.semicolon.movie.project.data.models.Movie;
 import africa.semicolon.movie.project.data.models.User;
 import africa.semicolon.movie.project.web.exceptions.BusinessLogicException;
+import africa.semicolon.movie.project.web.exceptions.MovieNotFoundException;
 import africa.semicolon.movie.project.web.exceptions.UserDoesNotExistException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -13,8 +15,7 @@ public interface UserService {
     User updateUserDetails(Long id, JsonPatch userPatch) throws UserDoesNotExistException, JsonPatchException, JsonProcessingException;
     User updateUser(String email, UserDto userDto) throws UserDoesNotExistException;
     void deleteUser(String email) throws UserDoesNotExistException;
-    User findUserByEmail(String email) throws UserDoesNotExistException;
-    User findUserById(Long id) throws UserDoesNotExistException;
+    Movie findMovieByName(String name) throws MovieNotFoundException;
 
 
 }
