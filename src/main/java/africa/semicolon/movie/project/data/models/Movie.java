@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 @Data
 @Entity
 public class Movie {
@@ -16,4 +17,10 @@ public class Movie {
     @CreationTimestamp
     private LocalDate yearReleased;
     private LocalDateTime duration;
+    private String posterPath;
+    private String title;
+    private Boolean adult;
+    private String overview;
+    private String mediaType;
+
 }
