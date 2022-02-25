@@ -7,12 +7,6 @@ import africa.semicolon.movie.project.data.repostories.MovieRepository;
 import africa.semicolon.movie.project.data.repostories.UserRepository;
 import africa.semicolon.movie.project.web.exceptions.BusinessLogicException;
 import africa.semicolon.movie.project.web.exceptions.MovieNotFoundException;
-import africa.semicolon.movie.project.web.exceptions.UserDoesNotExistException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,49 +39,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateUserDetails(Long id, JsonPatch userPatch) throws UserDoesNotExistException, JsonPatchException, JsonProcessingException {
-        Optional<User> queryResult = userRepository.findById(id);
-        if(queryResult.isEmpty()){
-            throw new UserDoesNotExistException("User with ID " +id + "Does not exist!!");
-        }
-        User targetUser = queryResult.get();
-        try{
-            targetUser = applyPatchToUSer(userPatch, targetUser);
-
-        }catch( JsonProcessingException | JsonPatchException e){
-            System.out.println("Update failed!!");
-        }
-        return userRepository.save(targetUser);
-    }
-
-    @Override
-    public User updateUser(String email, UserDto userDto) throws UserDoesNotExistException {
-        if(userDto == null){
-            throw new IllegalArgumentException("Request details cannot be null");
-        }
-        Optional <User> queryResult= userRepository.findByEmail(userDto.getEmail());
-        if(queryResult.isEmpty()){
-            throw new UserDoesNotExistException("User with email " +userDto.getEmail() +" does not exist");
-        }
-        User targetUser = queryResult.get();
-        targetUser.setLastName(userDto.getLastName());
-        targetUser.setPassword(userDto.getPassword());
-        targetUser.setFirstName(userDto.getFirstName());
-        targetUser.setEmail(userDto.getEmail());
-        return userRepository.save(targetUser);
-    }
-
-    @Override
-    public void deleteUser(String email) throws UserDoesNotExistException {
-        Optional<User> queryResult = userRepository.findByEmail(email);
-        if(queryResult.isEmpty()){
-            throw new UserDoesNotExistException("user with email " + email + " does not exist");
-        }
-        User user = queryResult.get();
-        userRepository.delete(user);
-    }
-
-    @Override
     public Movie findMovieByName(String name) throws MovieNotFoundException {
         Optional<Movie> queryResult = movieRepository.findMovieByName(name);
         if(queryResult.isEmpty()){
@@ -97,9 +48,5 @@ public class UserServiceImpl implements UserService{
         return targetMovie;
     }
 
-    private User applyPatchToUSer(JsonPatch userPatch, User targetUser) throws JsonProcessingException, JsonPatchException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode patched = userPatch.apply(objectMapper.convertValue(targetUser, JsonNode.class));
-        return objectMapper.treeToValue(patched, User.class);
-    }
+
 }

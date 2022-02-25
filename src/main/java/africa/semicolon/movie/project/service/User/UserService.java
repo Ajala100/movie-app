@@ -12,9 +12,6 @@ import com.github.fge.jsonpatch.JsonPatchException;
 
 public interface UserService {
     User createUser(UserDto userDto) throws BusinessLogicException;
-    User updateUserDetails(Long id, JsonPatch userPatch) throws UserDoesNotExistException, JsonPatchException, JsonProcessingException;
-    User updateUser(String email, UserDto userDto) throws UserDoesNotExistException;
-    void deleteUser(String email) throws UserDoesNotExistException;
     Movie findMovieByName(String name) throws MovieNotFoundException;
 
 
