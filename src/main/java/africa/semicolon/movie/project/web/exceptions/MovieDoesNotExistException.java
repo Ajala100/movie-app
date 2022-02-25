@@ -1,7 +1,7 @@
 package africa.semicolon.movie.project.web.exceptions;
 
-public class MovieDoesNotExist extends BusinessLogicException{
-    public MovieDoesNotExist (String message){
+public class MovieDoesNotExistException extends BusinessLogicException{
+    public MovieDoesNotExistException(String message){
         super(message);
     }
 }
