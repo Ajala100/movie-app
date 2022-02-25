@@ -12,5 +12,6 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_fk", referencedColumnName = "id")
     private List<Movie> movies;
 }
